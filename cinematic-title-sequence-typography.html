@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Cinematic Title Sequence Typography</title>
+<style>
+  :root{
+    --bg:#070a10;
+    --text:#eef2ff;
+    --muted:rgba(238,242,255,.72);
+    --accent:#FFD100;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; min-height:100vh; display:grid; place-items:center;
+    background:
+      radial-gradient(1100px 700px at 20% 10%, rgba(255,209,0,.12), transparent 60%),
+      radial-gradient(900px 600px at 85% 20%, rgba(59,130,246,.14), transparent 55%),
+      linear-gradient(180deg, #04060b, var(--bg));
+    color:var(--text);
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Helvetica Neue";
+    overflow:hidden;
+  }
+
+  .stage{
+    width:min(980px, 92vw);
+    border:1px solid rgba(255,255,255,.10);
+    background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+    border-radius:26px;
+    padding:42px 30px;
+    position:relative;
+    overflow:hidden;
+    box-shadow: 0 30px 90px rgba(0,0,0,.55);
+    backdrop-filter: blur(10px);
+  }
+
+  /* subtle film grain */
+  .stage::before{
+    content:"";
+    position:absolute; inset:-40%;
+    background-image:
+      radial-gradient(circle, rgba(255,255,255,.04) 1px, transparent 1px);
+    background-size: 7px 7px;
+    opacity:.12;
+    transform: rotate(12deg);
+    pointer-events:none;
+  }
+
+  /* moving vignette */
+  .stage::after{
+    content:"";
+    position:absolute; inset:-30%;
+    background: radial-gradient(circle at 50% 45%, transparent 45%, rgba(0,0,0,.55) 75%);
+    opacity:.75;
+    animation: vignetteDrift 5.8s ease-in-out infinite;
+    pointer-events:none;
+  }
+  @keyframes vignetteDrift{
+    0%{ transform: translate(-1%, -1%) scale(1.03); }
+    50%{ transform: translate(1.2%, 1%) scale(1.06); }
+    100%{ transform: translate(-1%, -1%) scale(1.03); }
+  }
+
+  .label{
+    letter-spacing:.28em;
+    text-transform:uppercase;
+    font-weight:800;
+    font-size:12px;
+    color:rgba(238,242,255,.70);
+    display:inline-flex;
+    gap:10px;
+    align-items:center;
+  }
+  .label .pip{
+    width:10px;height:10px;border-radius:999px;background:rgba(255,209,0,.85);
+    box-shadow: 0 0 18px rgba(255,209,0,.35);
+  }
+
+  .wrap{
+    margin-top:18px;
+    position:relative;
+    padding-bottom:14px;
+  }
+
+  /* Title reveal: masked wipe + depth */
+  .title{
+    margin:0;
+    font-size: clamp(34px, 5vw, 64px);
+    line-height:1.02;
+    letter-spacing:.01em;
+    font-weight:900;
+    position:relative;
+    display:inline-block;
+    transform: translateY(18px) scale(1.01);
+    opacity:0;
+    filter: blur(10px);
+    animation: titleIn 1.25s cubic-bezier(.2,.9,.2,1) forwards;
+    animation-delay: 0.35s;
+    will-change: transform, opacity, filter;
+  }
+  @keyframes titleIn{
+    0%{ opacity:0; transform: translateY(18px) scale(1.01); filter: blur(10px); }
+    70%{ opacity:1; transform: translateY(-1px) scale(1.00); filter: blur(1px); }
+    100%{ opacity:1; transform: translateY(0) scale(1.00); filter: blur(0); }
+  }
+
+  /* Wipe mask line */
+  .wipe{
+    position:absolute;
+    left:0; top:0;
+    height:100%;
+    width:0%;
+    border-bottom: 2px solid rgba(255,209,0,.85);
+    box-shadow: 0 8px 30px rgba(255,209,0,.20);
+    animation: wipe 1.05s cubic-bezier(.2,.9,.2,1) forwards;
+    animation-delay: 0.15s;
+  }
+  @keyframes wipe{
+    0%{ width:0%; opacity:.0; }
+    10%{ opacity:1; }
+    100%{ width:100%; opacity:.15; }
+  }
+
+  /* Subtitle */
+  .sub{
+    margin:18px 0 0;
+    max-width: 72ch;
+    color: var(--muted);
+    font-size: 14px;
+    line-height:1.55;
+    opacity:0;
+    transform: translateY(12px);
+    animation: subIn .9s ease forwards;
+    animation-delay: 1.2s;
+  }
+  @keyframes subIn{
+    to{ opacity:1; transform: translateY(0); }
+  }
+
+  /* Credits lines (title sequence feel) */
+  .credits{
+    margin-top:26px;
+    display:grid;
+    gap:10px;
+    color: rgba(238,242,255,.78);
+    font-size: 12px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+  }
+  .credit{
+    opacity:0;
+    transform: translateY(10px);
+    animation: creditIn .8s ease forwards;
+  }
+  .credit:nth-child(1){ animation-delay: 2.0s; }
+  .credit:nth-child(2){ animation-delay: 2.35s; }
+  .credit:nth-child(3){ animation-delay: 2.7s; }
+  @keyframes creditIn{
+    to{ opacity:1; transform: translateY(0); }
+  }
+
+  /* Looping micro motion to keep it “alive” */
+  .drift{
+    display:inline-block;
+    animation: drift 5.8s ease-in-out infinite;
+  }
+  @keyframes drift{
+    0%{ transform: translateY(0); }
+    50%{ transform: translateY(-6px); }
+    100%{ transform: translateY(0); }
+  }
+
+  /* Replay button */
+  .controls{
+    margin-top:26px;
+    display:flex;
+    gap:10px;
+    align-items:center;
+  }
+  button{
+    appearance:none; border:1px solid rgba(255,255,255,.14);
+    background: rgba(255,255,255,.06);
+    color: var(--text);
+    padding:10px 12px;
+    border-radius:12px;
+    font-weight:900;
+    cursor:pointer;
+  }
+  button.primary{
+    border-color: rgba(255,209,0,.28);
+    background: rgba(255,209,0,.14);
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .stage::after, .drift, .title, .wipe, .sub, .credit{ animation:none !important; }
+    .title, .sub, .credit{ opacity:1 !important; transform:none !important; filter:none !important; }
+    .wipe{ width:100% !important; opacity:.15 !important; }
+  }
+</style>
+</head>
+<body>
+  <div class="stage" id="stage">
+    <div class="label"><span class="pip"></span> Cinematic Title Sequence</div>
+
+    <div class="wrap">
+      <div class="wipe"></div>
+      <h1 class="title"><span class="drift">Cinematic Title Sequence Typography</span></h1>
+      <p class="sub">
+        Professional animated typography reveal with cinematic easing, depth-like motion, and clean pacing—built as a lightweight web demo.
+      </p>
+
+      <div class="credits">
+        <div class="credit">A Motion Typography Concept</div>
+        <div class="credit">Design • Timing • Easing</div>
+        <div class="credit">5.8s Sequence</div>
+      </div>
+
+      <div class="controls">
+        <button class="primary" id="replay">Replay</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+  // Replay by cloning the stage node (restarts CSS animations reliably in plain HTML)
+  document.getElementById('replay').addEventListener('click', () => {
+    const stage = document.getElementById('stage');
+    const clone = stage.cloneNode(true);
+    stage.parentNode.replaceChild(clone, stage);
+    clone.querySelector('#replay').addEventListener('click', () => {
+      const s = document.getElementById('stage');
+      const c = s.cloneNode(true);
+      s.parentNode.replaceChild(c, s);
+    });
+  });
+</script>
+</body>
+</html>
